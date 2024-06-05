@@ -10,7 +10,7 @@ Returns:
 
 # Set the initial parameters
 S0 = 100
-K = 120
+K = 110
 r = 0.05
 q = 0.02
 sig = 0.5
