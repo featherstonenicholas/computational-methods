@@ -149,3 +149,22 @@ def genericFFT(params, S0, K, r, q, T, alpha, eta, n, model):
         cT_km[i] = multiplier*np.real(yY[i])
     
     return km, cT_km
+print(' ')
+print('===================')
+print('Model is %s' % model)
+print('-------------------')
+    
+T = 1
+    
+print(' ')
+start_time = time.time()
+km, cT_km = genericFFT(params, S0, K, r, q, T, alpha, eta, n, model)
+cT_k = cT_km[0]
+
+
+elapsed_time = time.time() - start_time
+    
+#cT_k = np.interp(np.log(), km, cT_km)
+print("Option via FFT: for strike %s the option premium is %6.4f" % (np.exp(k), cT_k))
+#print("Option via FFT: for strike %s the option premium is %6.4f" % (np.exp(k), cT_km[0]))
+print('FFT execution time was %0.7f' % elapsed_time)
