@@ -37,7 +37,15 @@ def logNormal(S,*args):
     f = np.exp(-0.5*((np.log(S/S0)-(r-q-sig**2/2)*T)/(sig*np.sqrt(T)))**2)/(sig*S*np.sqrt(2*np.pi*T))
     return f, model
 
-
+def exp_dist(S,*args):
+    # model under consideration
+    model = 'Exponential'
+    #args order is (mean,)
+    mean=args[0]
+    lamda=1/mean
+    f= lamda*np.exp(-lamda*S)
+    return f,model
+    
 def call_pdf(N,dS, pdf, *args):
     #start timing
     t0 = time.time()
@@ -59,5 +67,7 @@ def call_pdf(N,dS, pdf, *args):
     print('Value of Put option is %f' % p_0)
     return c_0, p_0,run_time, model
 
-args=(r,q,sig,S0,T)
-c_0 , p_0, runtime , model = call_pdf(N,dS, logNormal ,*args)
+#args=(r,q,sig,S0,T)
+
+args=(100,)
+c_0 , p_0, runtime , model = call_pdf(N,dS, exp_dist ,*args)
