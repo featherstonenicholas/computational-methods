@@ -1,4 +1,5 @@
-#Computational methods
+# Computational methods
+
 These files compute european option prices using computational methods rather than closed analytical solutions
 
 * pdf_pricing uses numerical integration of a known pdf of asset values at maturity to compute option prices
