@@ -11,13 +11,13 @@ r = 0.05
 q = 0.01
 
 # Parameters for FFT 
-n = 12
+n = 10
 N = 2**n
 
 #step-size
 eta = 0.25
 # damping factor
-alpha = 1.5
+alpha = -1.5
 
 # step-size in log strike space
 lda = (2*math.pi/N)/eta
@@ -27,12 +27,12 @@ lda = (2*math.pi/N)/eta
 beta = np.log(K)
 
 #model-specific Parameters
-model = 'Heston'
+model = 'VG'
 
 params = []     
 if (model == 'GBM'):
     
-    sig = 0.30
+    sig = 0.3
     params.append(sig);
     
 elif (model == 'VG'):
@@ -109,7 +109,7 @@ def generic_CF(u, params, S0, r, q, T, model):
             phi  = math.exp(1j*u*mu) * math.exp((1j*theta*u-0.5*sigma**2*u**2)*T)
         else:
             mu  = math.log(S0) + (r-q + math.log(1-theta*nu-0.5*sigma**2*nu)/nu)*T
-            phi = cmath.exp(1j*u*mu)*((1-1j*nu*theta*u+0.5*nu*sigma**2*u**2)**(-T/nu))
+            phi = np.exp(1j*u*mu)*((1-1j*nu*theta*u+0.5*nu*sigma**2*u**2)**(-T/nu))
 
     return phi
 
@@ -159,12 +159,18 @@ T = 1
 print(' ')
 start_time = time.time()
 km, cT_km = genericFFT(params, S0, K, r, q, T, alpha, eta, n, model)
-cT_k = cT_km[0]
-
+if alpha>0:
+    cT_k = cT_km[0]
+    pT_k= cT_k + K * np.exp(-r * T) - S0*np.exp(-q*T) 
+elif alpha<-1:
+    pT_k=cT_km[0]
+    cT_k= pT_k - K * np.exp(-r * T) + S0*np.exp(-q*T)
+    
 
 elapsed_time = time.time() - start_time
     
 #cT_k = np.interp(np.log(), km, cT_km)
-print("Option via FFT: for strike %s the option premium is %6.4f" % (np.exp(k), cT_k))
+print("Option via FFT: for strike %s the call option premium is %6.4f" % (np.exp(k), cT_k))
+print("Option via FFT: for strike %s the put option premium is %6.4f" % (np.exp(k), pT_k))
 #print("Option via FFT: for strike %s the option premium is %6.4f" % (np.exp(k), cT_km[0]))
 print('FFT execution time was %0.7f' % elapsed_time)
